@@ -24,6 +24,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Check if there's a user already logged in
+        if( ParseUser.getCurrentUser() != null ) {
+            goToMainActivity();
+        }
+
         mBtnLogin = findViewById(R.id.btnLogin);
         mBtnSignUp = findViewById(R.id.btnSignup);
         mUsername = findViewById(R.id.etUsername);
