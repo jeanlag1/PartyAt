@@ -47,6 +47,7 @@
 * User can share item from wishlist/feed with followers.
 * User can start socializing with people going to the same party using a chat feature.
 * User's feed is defaulty personalized to current user
+* User can see a preview before publishing an event
 
 ### 2. Screen Archetypes
 
