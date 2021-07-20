@@ -3,12 +3,14 @@ package com.codepath.partyat;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseObject;
 
 public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        // Register the subclasses
+        ParseObject.registerSubclass(Event.class);
         // Initializes Parse SDK as soon as the application is created
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("FIvfvjqsDmEtXgKXZPld0Y6GoHhVFUrNEZAfY0U9")

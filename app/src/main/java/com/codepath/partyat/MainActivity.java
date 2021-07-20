@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private Button mLogout;
     private BottomNavigationView mNavBar;
 
     @Override
@@ -56,18 +56,31 @@ public class MainActivity extends AppCompatActivity {
                 });
         // Set default selection
         mNavBar.setSelectedItemId(R.id.home_iem);
+    }
 
-        mLogout = findViewById(R.id.btnLogout);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // inflate menu
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setTitle("");
+//        getSupportActionBar().setIcon(R.drawable.nav_logo_whiteout);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                ParseUser currentUser = ParseUser.getCurrentUser();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            ParseUser.logOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        if (item.getItemId() == R.id.btnCreate) {
+            Intent i = new Intent(MainActivity.this, CreateActivity.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

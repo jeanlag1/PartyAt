@@ -14,7 +14,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/wishlist_item"
-        android:icon="@drawable/ic_baseline_playlist_add_check_24"
+        android:icon="@drawable/ic_baseline_favorite_24"
         android:title="wishlist"
         app:showAsAction="always" />
     <item

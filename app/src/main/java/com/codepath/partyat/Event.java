@@ -24,11 +24,11 @@ public class Event extends ParseObject {
         return getString("details");
     }
 
-    public ParseGeoPoint geLocation() {
+    public ParseGeoPoint getLocation() {
         return getParseGeoPoint("location");
     }
 
-    public ParseUser geUser() {
+    public ParseUser getUser() {
         return getParseUser("user");
     }
 
