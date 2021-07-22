@@ -10,6 +10,8 @@
         android:id="@+id/btnPublish"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="Publish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,16 +75,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Image:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/etTime" />
 
     <ImageView
         android:id="@+id/ivUploadImg"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_width="100dp"
+        android:layout_height="146dp"
         android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/btnPublish"
         app:layout_constraintEnd_toEndOf="@+id/etDetails"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/etDetails"
@@ -93,13 +96,73 @@
         android:id="@+id/btnUpload"
         android:layout_width="223dp"
         android:layout_height="31dp"
-        android:layout_marginTop="24dp"
         android:drawablePadding="0dp"
         android:text="Click to add an image"
         android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/ivUploadImg"
-        app:layout_constraintHorizontal_bias="0.561"
-        app:layout_constraintStart_toStartOf="@+id/ivUploadImg"
+        app:layout_constraintEnd_toEndOf="@+id/etDetails"
+        app:layout_constraintHorizontal_bias="0.715"
+        app:layout_constraintStart_toStartOf="@+id/etDetails"
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Date: "
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etDetails" />
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Jul 21, 2021"
+        android:inputType="date"
+        app:layout_constraintStart_toStartOf="@+id/etDetails"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etDate" />
+
+    <EditText
+        android:id="@+id/etTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="9:41 AM"
+        android:inputType="time"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toStartOf="@+id/etDate"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+    <ImageButton
+        android:id="@+id/btnDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etDate"
+        app:layout_constraintStart_toEndOf="@+id/etDate"
+        app:layout_constraintTop_toTopOf="@+id/etDate"
+        app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
+    <ImageButton
+        android:id="@+id/btnTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etTime"
+        app:layout_constraintStart_toEndOf="@+id/etTime"
+        app:layout_constraintTop_toTopOf="@+id/etTime"
+        app:srcCompat="@drawable/ic_baseline_access_time_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

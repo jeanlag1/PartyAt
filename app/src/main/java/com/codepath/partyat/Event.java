@@ -6,13 +6,19 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.io.Serializable;
+
 @ParseClassName("Event")
-public class Event extends ParseObject {
+public class Event extends ParseObject implements Serializable {
+    private static final long serialVersionUID = 5177222050535318633L;
     private String mTitle;
     private String mDetails;
+    private String mDate;
+    private String mTime;
     private ParseGeoPoint mLocation;
     private ParseUser mUser;
     private ParseFile mImage;
+
 
     // Getters
 
@@ -36,6 +42,14 @@ public class Event extends ParseObject {
         return getParseFile("image");
     }
 
+    public String getDate() {
+        return getString("date");
+    }
+
+    public String getTime() {
+        return getString("time");
+    }
+
     // Setters
 
     public void setTitle(String mTitle) {
@@ -56,5 +70,13 @@ public class Event extends ParseObject {
 
     public void setImage(ParseFile mImage) {
         put("image", mImage);
+    }
+
+    public void setDate(String mDate) {
+         put("date", mDate);
+    }
+
+    public void setTime(String mTime) {
+         put("time", mTime);
     }
 }

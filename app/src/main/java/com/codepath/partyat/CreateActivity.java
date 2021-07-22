@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,26 +16,40 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.codepath.partyat.Fragments.DatePickerFragment;
+import com.codepath.partyat.Fragments.TimePickerFragment;
+import com.google.android.material.timepicker.TimeFormat;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
-public class CreateActivity extends AppCompatActivity {
+public class CreateActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private static final String TAG = "CreateActivity";
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 53 ;
     public String mPhotoFileName = "photo.jpg";
     private File mPhotoFile;
     private Button mPublish;
     private Button mUpload;
+    private ImageButton mBtnDate;
+    private ImageButton mBtnTime;
     private EditText mEtTitle;
     private EditText mEtDetails;
+    private EditText mDate;
+    private EditText mTime;
     private ImageView mIvUploadPicture;
 
     @Override
@@ -44,9 +60,26 @@ public class CreateActivity extends AppCompatActivity {
         mPublish = findViewById(R.id.btnPublish);
         mUpload = findViewById(R.id.btnUpload);
         mEtDetails = findViewById(R.id.etDetails);
+        mBtnDate = findViewById(R.id.btnDate);
+        mBtnTime = findViewById(R.id.btnTime);
+        mDate = findViewById(R.id.etDate);
+        mTime = findViewById(R.id.etTime);
         mEtTitle = findViewById(R.id.etTitlte);
         mIvUploadPicture = findViewById(R.id.ivUploadImg);
 
+        mBtnTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(v);
+            }
+        });
+
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
         mUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,16 +95,25 @@ public class CreateActivity extends AppCompatActivity {
         });
     }
 
+
     private void postParty() {
         Event event = new Event();
         if (mEtTitle.getText().toString().isEmpty()) {
             Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_LONG).show();
             return;
         }
+        if (mEtDetails.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Details cannot be empty", Toast.LENGTH_LONG).show();
+            return;
+        }
         event.setTitle(mEtTitle.getText().toString());
         event.setDetails(mEtDetails.getText().toString());
-        event.setImage(new ParseFile(mPhotoFile));
+        if (mPhotoFile != null) {
+            event.setImage(new ParseFile(mPhotoFile));
+        }
         event.setUser(ParseUser.getCurrentUser());
+        event.setDate(mDate.getText().toString());
+        event.setTime(mTime.getText().toString());
         event.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -83,6 +125,8 @@ public class CreateActivity extends AppCompatActivity {
                 mEtDetails.setText("");
                 mEtTitle.setText("");
                 mIvUploadPicture.setImageResource(0);
+                mDate.setText("");
+                mTime.setText("");
                 finish();
             }
         });
@@ -137,5 +181,37 @@ public class CreateActivity extends AppCompatActivity {
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // attach to an onclick handler to show the date picker
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    // handle the date selected
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        // store the values selected into a Calendar instance
+        final Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, monthOfYear);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String date = DateFormat.getDateInstance(DateFormat.DEFAULT).format(c.getTime());
+        mDate.setText(date);
+    }
+
+    private void showTimePickerDialog(View v) {
+        TimePickerFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        final Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+        mTime.setText(time);
     }
 }

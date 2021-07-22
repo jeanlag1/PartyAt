@@ -1,6 +1,7 @@
 package com.codepath.partyat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
@@ -50,10 +52,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             mTitle = itemView.findViewById(R.id.tvEventTitle);
             mDetails = itemView.findViewById(R.id.tvEventDetails);
             mImage = itemView.findViewById(R.id.ivEventImg);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext, DetailsActivity.class);
+                    //get event at this position
+                    Event event = mEvents.get(getAdapterPosition());
+                    // serialize the movie using parceler
+                    i.putExtra("event", (Serializable) event);
+                    mContext.startActivity(i);
+                }
+            });
         }
 
         public void bind(Event event) {
