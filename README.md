@@ -64,6 +64,7 @@
     * User can add a location
     * User can add a type (public or private)
     * User can add a payment method if applicable (Venmo, Paypal, bank deposit,...)
+    * User can add a date
 * Wishlist 
     * User can remove item 
     * User can click on item to see more details
