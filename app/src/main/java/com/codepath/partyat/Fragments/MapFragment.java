@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.codepath.partyat.Event;
 import com.codepath.partyat.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -33,8 +34,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -50,6 +59,7 @@ public class MapFragment extends Fragment {
     Location mCurrentLocation;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    List<Event> mEvents;
 
     private final static String KEY_LOCATION = "location";
 
@@ -73,6 +83,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mEvents = new ArrayList<>();
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -105,9 +116,45 @@ public class MapFragment extends Fragment {
             Toast.makeText(getContext(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             MapFragmentPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapFragmentPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
+            queryEvents();
+//            loadCurrentParties(map);
         } else {
             Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void addMarkers() {
+        Log.i("FETCH: ", "Events: " + mEvents.size());
+        for (Event e : mEvents) {
+            ParseGeoPoint location = e.getLocation();
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .title(e.getTitle())
+                    .snippet(e.getDate() + " @ " + e.getTime()));
+            Toast.makeText(getContext(), "Successfully added", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void queryEvents() {
+        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
+        query.include("user");
+        query.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> events, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Toast.makeText(getContext(),"Issue with getting events", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
+                // for debugging purposes let's print every post description to logcat
+                for (Event event : events) {
+                    Log.i("FETCH: ", "Event: " + event.getTitle());
+                }
+                mEvents.addAll(events);
+                addMarkers();
+            }
+        });
     }
 
     @Override
@@ -267,5 +314,7 @@ public class MapFragment extends Fragment {
             return mDialog;
         }
     }
+
+
 
 }
