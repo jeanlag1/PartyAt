@@ -94,7 +94,6 @@ public class MapFragment extends Fragment {
             // is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
-        Log.i("DEEEBUG", String.valueOf(getChildFragmentManager().findFragmentById(R.id.myMap)));
         mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.myMap));
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {

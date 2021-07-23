@@ -29,12 +29,15 @@ import com.codepath.partyat.Fragments.TimePickerFragment;
 import com.google.android.material.timepicker.TimeFormat;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class CreateActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -51,6 +54,8 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
     private EditText mDate;
     private EditText mTime;
     private ImageView mIvUploadPicture;
+    private ImageView mBtnLocation;
+    private EditText mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,8 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         mTime = findViewById(R.id.etTime);
         mEtTitle = findViewById(R.id.etTitlte);
         mIvUploadPicture = findViewById(R.id.ivUploadImg);
+        mLocation = findViewById(R.id.etLocation);
+        mBtnLocation = findViewById(R.id.btnLocation);
 
         mBtnTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +100,16 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
                 postParty();
             }
         });
+
+        mBtnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { addLocation();}
+        });
+    }
+
+    private void addLocation() {
+//        PlacePicker.IntentBuilder builder =
+
     }
 
 
@@ -108,6 +125,13 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         }
         event.setTitle(mEtTitle.getText().toString());
         event.setDetails(mEtDetails.getText().toString());
+        // Set Location
+        String[] geo = mLocation.getText().toString().split(",");
+        ParseGeoPoint location = new ParseGeoPoint();
+        location.setLatitude(Double.parseDouble(geo[0]));
+        location.setLongitude(Double.parseDouble(geo[1]));
+        event.setLocation(location);
+
         if (mPhotoFile != null) {
             event.setImage(new ParseFile(mPhotoFile));
         }

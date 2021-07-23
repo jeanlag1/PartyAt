@@ -78,12 +78,12 @@
         android:layout_marginTop="16dp"
         android:text="Image:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTime" />
+        app:layout_constraintTop_toBottomOf="@+id/etLocation" />
 
     <ImageView
         android:id="@+id/ivUploadImg"
-        android:layout_width="100dp"
-        android:layout_height="146dp"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/btnPublish"
         app:layout_constraintEnd_toEndOf="@+id/etDetails"
@@ -164,5 +164,34 @@
         app:layout_constraintStart_toEndOf="@+id/etTime"
         app:layout_constraintTop_toTopOf="@+id/etTime"
         app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Location:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTime" />
+
+    <EditText
+        android:id="@+id/etLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPostalAddress"
+        app:layout_constraintStart_toStartOf="@+id/etTitlte"
+        app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+    <ImageButton
+        android:id="@+id/btnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etLocation"
+        app:layout_constraintStart_toEndOf="@+id/etLocation"
+        app:layout_constraintTop_toTopOf="@+id/etLocation"
+        app:srcCompat="@drawable/ic_baseline_add_location_alt_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
