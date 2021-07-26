@@ -58,7 +58,7 @@ public class MapFragment extends Fragment {
     private LocationRequest mLocationRequest;
     Location mCurrentLocation;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private long FASTEST_INTERVAL = 60000; /* 5 secs */
     List<Event> mEvents;
 
     private final static String KEY_LOCATION = "location";
@@ -123,6 +123,7 @@ public class MapFragment extends Fragment {
     }
 
     private void addMarkers() {
+
         Log.i("FETCH: ", "Events: " + mEvents.size());
         for (Event e : mEvents) {
             ParseGeoPoint location = e.getLocation();
@@ -239,9 +240,9 @@ public class MapFragment extends Fragment {
 
     private void displayLocation() {
         if (mCurrentLocation != null) {
-//            Toast.makeText(getContext(), "GPS location was found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 8);
             map.animateCamera(cameraUpdate);
         } else {
 //            Toast.makeText(getContext(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
@@ -281,7 +282,7 @@ public class MapFragment extends Fragment {
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-//        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         displayLocation();
     }
 

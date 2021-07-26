@@ -18,7 +18,8 @@ public class Event extends ParseObject implements Serializable {
     private ParseGeoPoint mLocation;
     private ParseUser mUser;
     private ParseFile mImage;
-
+    private Boolean mIsPrivate;
+    private Boolean mIsWeekend;
 
     // Getters
 
@@ -50,6 +51,13 @@ public class Event extends ParseObject implements Serializable {
         return getString("time");
     }
 
+    public Boolean getIsPrivate() {
+        return getBoolean("isPrivate");
+
+    }public Boolean getIsWeekend() {
+        return getBoolean("isWeekend");
+    }
+
     // Setters
 
     public void setTitle(String mTitle) {
@@ -78,5 +86,13 @@ public class Event extends ParseObject implements Serializable {
 
     public void setTime(String mTime) {
          put("time", mTime);
+    }
+
+    public void setIsPrivate(Boolean mIsPrivate) {
+        put("isPrivate" ,mIsPrivate);
+    }
+
+    public void setIsWeekend(Boolean mIsWeekend) {
+        put("isWeekend" ,mIsWeekend);
     }
 }

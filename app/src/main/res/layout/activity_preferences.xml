@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    tools:context=".PreferencesActivity">
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Preferences"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <Switch
+        android:id="@+id/sWeekend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weekend" />
+
+    <Switch
+        android:id="@+id/sPrivate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Private" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Max. Distance (in miles)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etMaxDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnSavePref"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+
+</LinearLayout>

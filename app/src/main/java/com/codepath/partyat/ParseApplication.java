@@ -11,6 +11,7 @@ public class ParseApplication extends Application {
         super.onCreate();
         // Register the subclasses
         ParseObject.registerSubclass(Event.class);
+        ParseObject.registerSubclass(Preference.class);
         // Initializes Parse SDK as soon as the application is created
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("FIvfvjqsDmEtXgKXZPld0Y6GoHhVFUrNEZAfY0U9")

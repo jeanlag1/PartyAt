@@ -72,12 +72,20 @@ public class LoginActivity extends AppCompatActivity {
             if (e == null) {
                 // Hooray! Let them use the app now.
                 Toast.makeText(this, "Successfully signed up", Toast.LENGTH_SHORT).show();
+//                goToMainActivity();
+                goToPreferences();
             } else {
                 // Sign up didn't succeed. Look at the ParseException
                 // to figure out what went wrong
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void goToPreferences() {
+        Intent i = new Intent(this, PreferencesActivity.class);
+        startActivity(i);
+//        finish();
     }
 
     private void loginUser(String username, String password) {
