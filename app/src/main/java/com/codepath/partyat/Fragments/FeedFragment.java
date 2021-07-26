@@ -39,6 +39,7 @@ import permissions.dispatcher.NeedsPermission;
 
 public class FeedFragment extends Fragment {
     private static final String TAG = "FeedFragment";
+    private static final int SCORE_SCALE_FACTOR = 10000;
     RecyclerView rvFeed;
     List<Event> mEvents;
     EventAdapter mAdapter;
@@ -63,24 +64,28 @@ public class FeedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvFeed = view.findViewById(R.id.rvFeed);
         mEvents = new ArrayList<>();
+        mUserPref = new Preference();
         mCurrentUser = ParseUser.getCurrentUser();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        getLocation();
+
+        queryPreferences();
+
+//        getLocation();
 
         mAdapter = new EventAdapter(getContext(), mEvents);
         rvFeed.setAdapter(mAdapter);
         rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
-        queryEvents();
-        queryPreferences();
+
+//        queryEvents();
 
     }
 
     @SuppressWarnings({"MissingPermission"})
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void getLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                .addOnSuccessListener( new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
@@ -102,22 +107,18 @@ public class FeedFragment extends Fragment {
                     Log.e(TAG, "Issue with getting pref", e);
                     return;
                 }
+
                 mUserPref = prefs.get(0);
+                getLocation();
+                queryEvents();
             }
         });
 
     }
 
     public void queryEvents() {
-        // TODO: implementation to fetch current available events
         ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
         query.include("user");
-        // Configure limit and sort order
-//        query.setLimit(MAX_POST_TO_SHOW);
-        // get the latest 20 messages, order will show up newest to oldest of this group
-        query.orderByDescending("createdAt");
-        // Execute query to fetch all messages from Parse asynchronously
-        // This is equivalent to a SELECT query with SQL
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Event>() {
             @Override
@@ -129,19 +130,16 @@ public class FeedFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
-                // for debugging purposes let's print every post description to logcat
-//                Log.d(TAG, "Class of event: " + events.get(0).getClass());
-                for (Event event : events) {
-                    Log.i(TAG, "Event: " + event.getTitle());
-                }
 
                 // Sort events based on user preferences
-//                events.sort(new Comparator<Event>() {
-//                    @Override
-//                    public int compare(Event o1, Event o2) {
-//                        return (int) - (compatibilityScore(o1) - compatibilityScore(o2));
-//                    }
-//                });
+                events.sort(new Comparator<Event>() {
+                    @Override
+                    public int compare(Event o1, Event o2) {
+//                        return (int) (o1.getLocation().getLatitude() - o2.getLocation().getLatitude());
+                        return (int) - (compatibilityScore(o1) - compatibilityScore(o2));
+                    }
+                });
+
                 mEvents.addAll(events);
                 mAdapter.notifyDataSetChanged();
             }
@@ -155,7 +153,7 @@ public class FeedFragment extends Fragment {
      */
     private double compatibilityScore(Event o1) {
 
-        // retrieve data
+        // retrieve preferences
         int max_distance = mUserPref.getMaxDistance();
         boolean is_weekend = mUserPref.getIsWeekend();
         boolean is_private = mUserPref.getIsPrivate();
@@ -168,10 +166,10 @@ public class FeedFragment extends Fragment {
         int event_time = o1.getIsWeekend() ? 1 : 0;
         int weekend_factor = is_weekend ? event_time : 0;
         int private_factor = is_private ? event_type : 0;
-        return weekend_factor + private_factor + dist_factor;
-    }
 
-    private boolean isWeekDay(String date) {
+        double score = weekend_factor + private_factor +  dist_factor;
+
+        return SCORE_SCALE_FACTOR * score;
     }
 
     // This method computes the Euclidean distance between two location points

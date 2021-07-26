@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -56,6 +57,8 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
     private ImageView mIvUploadPicture;
     private ImageView mBtnLocation;
     private EditText mLocation;
+    private Switch mIsPrivate;
+    private Boolean mIsWeekend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         mIvUploadPicture = findViewById(R.id.ivUploadImg);
         mLocation = findViewById(R.id.etLocation);
         mBtnLocation = findViewById(R.id.btnLocation);
+        mIsPrivate = findViewById(R.id.sIsPrivate);
 
         mBtnTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +112,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
     }
 
     private void addLocation() {
-//        PlacePicker.IntentBuilder builder =
-
+    //TODO: GOogle Place API
     }
 
 
@@ -131,6 +134,8 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         location.setLatitude(Double.parseDouble(geo[0]));
         location.setLongitude(Double.parseDouble(geo[1]));
         event.setLocation(location);
+        event.setIsPrivate(mIsPrivate.isChecked());
+        event.setIsWeekend(mIsWeekend);
 
         if (mPhotoFile != null) {
             event.setImage(new ParseFile(mPhotoFile));
@@ -221,7 +226,10 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
         String date = DateFormat.getDateInstance(DateFormat.DEFAULT).format(c.getTime());
+        mIsWeekend =  ((c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                || (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY));
         mDate.setText(date);
     }
 

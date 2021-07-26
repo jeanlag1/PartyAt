@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Create your party."
             android:textSize="34sp"
             android:textStyle="bold|italic"
@@ -65,7 +65,7 @@
         <EditText
             android:id="@+id/etDetails"
             android:layout_width="300dp"
-            android:layout_height="133dp"
+            android:layout_height="90dp"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine"
@@ -80,7 +80,7 @@
             android:layout_marginTop="16dp"
             android:text="Image:"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
+            app:layout_constraintTop_toBottomOf="@+id/sIsPrivate" />
 
         <ImageView
             android:id="@+id/ivUploadImg"
@@ -195,5 +195,17 @@
             app:layout_constraintStart_toEndOf="@+id/etLocation"
             app:layout_constraintTop_toTopOf="@+id/etLocation"
             app:srcCompat="@drawable/ic_baseline_add_location_alt_24" />
+
+        <Switch
+            android:id="@+id/sIsPrivate"
+            android:layout_width="377dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Private"
+            android:textColor="#9A9A9A"
+            app:layout_constraintEnd_toEndOf="@+id/etDetails"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
