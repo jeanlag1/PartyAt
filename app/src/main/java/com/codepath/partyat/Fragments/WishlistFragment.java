@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -22,6 +23,9 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,51 +33,36 @@ import java.util.List;
  * Use the {@link WishlistFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WishlistFragment extends FeedFragment {
+public class WishlistFragment extends Fragment {
     private static final String TAG = "WishlistFragment";
-//    private RecyclerView mRvWishlist;
-//    private List<Event> mEvents;
-//    private EventAdapter mAdapter;
+    private RecyclerView mRvWishlist;
+    private List<Event> mEvents;
+    private EventAdapter mAdapter;
 
     public WishlistFragment() {
         // Required empty public constructor
     }
 
+
     @Override
-    public void queryEvents() {
-//        super.queryEvents();
-        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
-        query.include("user");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
-        // Configure limit and sort order
-//        query.setLimit(MAX_POST_TO_SHOW);
-        // get the latest 20 messages, order will show up newest to oldest of this group
-        query.orderByDescending("createdAt");
-        // Execute query to fetch all messages from Parse asynchronously
-        // This is equivalent to a SELECT query with SQL
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> events, ParseException e) {
-                Log.i(TAG, events.toString());
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting events", e);
-                    return;
-                }
-                Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
-                // for debugging purposes let's print every post description to logcat
-//                Log.d(TAG, "Class of event: " + events.get(0).getClass());
-                for (Event event : events) {
-                    Log.i(TAG, "Event: " + event.getTitle());
-                }
-
-//                 save received posts to list and notify adapter of new data
-
-                mEvents.addAll(events);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_wishlist, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRvWishlist = view.findViewById(R.id.rvWishlist);
+        mEvents = new ArrayList<>();
+        mAdapter = new EventAdapter(getContext(), mEvents);
+        mRvWishlist.setAdapter(mAdapter);
+        mRvWishlist.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        List<Event> liked = (List<Event>) ParseUser.getCurrentUser().get("liked");
+
+        if (liked != null){
+            mEvents.addAll(liked);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 }

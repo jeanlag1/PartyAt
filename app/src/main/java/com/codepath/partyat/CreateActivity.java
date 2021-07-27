@@ -59,6 +59,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
     private EditText mLocation;
     private Switch mIsPrivate;
     private Boolean mIsWeekend;
+    private Event mEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
 
 
     private void postParty() {
-        Event event = new Event();
+        mEvent = new Event();
         if (mEtTitle.getText().toString().isEmpty()) {
             Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_LONG).show();
             return;
@@ -126,24 +127,10 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
             Toast.makeText(this, "Details cannot be empty", Toast.LENGTH_LONG).show();
             return;
         }
-        event.setTitle(mEtTitle.getText().toString());
-        event.setDetails(mEtDetails.getText().toString());
-        // Set Location
-        String[] geo = mLocation.getText().toString().split(",");
-        ParseGeoPoint location = new ParseGeoPoint();
-        location.setLatitude(Double.parseDouble(geo[0]));
-        location.setLongitude(Double.parseDouble(geo[1]));
-        event.setLocation(location);
-        event.setIsPrivate(mIsPrivate.isChecked());
-        event.setIsWeekend(mIsWeekend);
 
-        if (mPhotoFile != null) {
-            event.setImage(new ParseFile(mPhotoFile));
-        }
-        event.setUser(ParseUser.getCurrentUser());
-        event.setDate(mDate.getText().toString());
-        event.setTime(mTime.getText().toString());
-        event.saveInBackground(new SaveCallback() {
+        setEventFields();
+
+        mEvent.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
@@ -151,14 +138,38 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
                     Toast.makeText(CreateActivity.this, "Error while saving!", Toast.LENGTH_LONG).show();
                 }
                 Log.i(TAG, "Post saved successfully");
-                mEtDetails.setText("");
-                mEtTitle.setText("");
-                mIvUploadPicture.setImageResource(0);
-                mDate.setText("");
-                mTime.setText("");
+                reinitializeFields();
                 finish();
             }
         });
+    }
+
+    private void reinitializeFields() {
+        mEtDetails.setText("");
+        mEtTitle.setText("");
+        mIvUploadPicture.setImageResource(0);
+        mDate.setText("");
+        mTime.setText("");
+    }
+
+    private void setEventFields() {
+        mEvent.setTitle(mEtTitle.getText().toString());
+        mEvent.setDetails(mEtDetails.getText().toString());
+        // Set Location
+        String[] geo = mLocation.getText().toString().split(",");
+        ParseGeoPoint location = new ParseGeoPoint();
+        location.setLatitude(Double.parseDouble(geo[0]));
+        location.setLongitude(Double.parseDouble(geo[1]));
+        mEvent.setLocation(location);
+        mEvent.setIsPrivate(mIsPrivate.isChecked());
+        mEvent.setIsWeekend(mIsWeekend);
+
+        if (mPhotoFile != null) {
+            mEvent.setImage(new ParseFile(mPhotoFile));
+        }
+        mEvent.setUser(ParseUser.getCurrentUser());
+        mEvent.setDate(mDate.getText().toString());
+        mEvent.setTime(mTime.getText().toString());
     }
 
     private void launchCamera() {

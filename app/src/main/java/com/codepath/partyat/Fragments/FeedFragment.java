@@ -40,9 +40,9 @@ import permissions.dispatcher.NeedsPermission;
 public class FeedFragment extends Fragment {
     private static final String TAG = "FeedFragment";
     private static final int SCORE_SCALE_FACTOR = 10000;
-    RecyclerView rvFeed;
-    List<Event> mEvents;
-    EventAdapter mAdapter;
+    private RecyclerView rvFeed;
+    private List<Event> mEvents;
+    private EventAdapter mAdapter;
     private Preference mUserPref;
     ParseUser mCurrentUser;
     private FusedLocationProviderClient fusedLocationClient;
@@ -67,16 +67,13 @@ public class FeedFragment extends Fragment {
         mUserPref = new Preference();
         mCurrentUser = ParseUser.getCurrentUser();
 
+        getLocation();
 
         queryPreferences();
-
-//        getLocation();
 
         mAdapter = new EventAdapter(getContext(), mEvents);
         rvFeed.setAdapter(mAdapter);
         rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
-
-//        queryEvents();
 
     }
 
@@ -109,7 +106,6 @@ public class FeedFragment extends Fragment {
                 }
 
                 mUserPref = prefs.get(0);
-                getLocation();
                 queryEvents();
             }
         });
@@ -129,7 +125,7 @@ public class FeedFragment extends Fragment {
                     Log.e(TAG, "Issue with getting events", e);
                     return;
                 }
-                Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
 
                 // Sort events based on user preferences
                 events.sort(new Comparator<Event>() {
