@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.codepath.partyat.DataManager;
 import com.codepath.partyat.Event;
 import com.codepath.partyat.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +44,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -51,15 +53,17 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 @RuntimePermissions
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements DataManager.EventsQueryCallback {
 
+    private static final String TAG = MapFragment.class.getSimpleName() ;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private LocationRequest mLocationRequest;
     Location mCurrentLocation;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 60000; /* 5 secs */
+    private long FASTEST_INTERVAL = 60000; /* 60 secs */
     List<Event> mEvents;
+    private DataManager mDataManager;
 
     private final static String KEY_LOCATION = "location";
 
@@ -84,6 +88,7 @@ public class MapFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEvents = new ArrayList<>();
+        mDataManager = new DataManager(getActivity());
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -108,6 +113,7 @@ public class MapFragment extends Fragment {
 
     }
 
+
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
         if (map != null) {
@@ -115,16 +121,13 @@ public class MapFragment extends Fragment {
             Toast.makeText(getContext(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             MapFragmentPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapFragmentPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
-            queryEvents();
-//            loadCurrentParties(map);
+            mDataManager.queryEvents(this);
         } else {
             Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void addMarkers() {
-
-        Log.i("FETCH: ", "Events: " + mEvents.size());
         for (Event e : mEvents) {
             ParseGeoPoint location = e.getLocation();
             map.addMarker(new MarkerOptions()
@@ -135,27 +138,6 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void queryEvents() {
-        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
-        query.include("user");
-        query.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> events, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Toast.makeText(getContext(),"Issue with getting events", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                Toast.makeText(getContext(), "Successfully fetched", Toast.LENGTH_SHORT).show();
-                // for debugging purposes let's print every post description to logcat
-                for (Event event : events) {
-                    Log.i("FETCH: ", "Event: " + event.getTitle());
-                }
-                mEvents.addAll(events);
-                addMarkers();
-            }
-        });
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -168,24 +150,7 @@ public class MapFragment extends Fragment {
     void getMyLocation() {
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMyLocationButtonEnabled(true);
-
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(getActivity());
-        locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            onLocationChanged(location);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("MapFragment", "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
-                });
+        mDataManager.getLocation(getActivity());
     }
 
     /*
@@ -289,6 +254,12 @@ public class MapFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onEventsFetch(List<Event> events) {
+        mEvents.addAll(events);
+        addMarkers();
     }
 
     // Define a DialogFragment that displays the error dialog

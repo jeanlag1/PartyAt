@@ -58,8 +58,13 @@ public class WishlistFragment extends Fragment {
         mRvWishlist.setAdapter(mAdapter);
         mRvWishlist.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Event> liked = (List<Event>) ParseUser.getCurrentUser().get("liked");
-
+//        Log.i(TAG, "First element: " + ParseUser.getCurrentUser().getList("liked").get(0).getTitle());
+        List<Event> liked = null;
+        try {
+            liked = ParseUser.getCurrentUser().fetchIfNeeded().getList("liked");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (liked != null){
             mEvents.addAll(liked);
             mAdapter.notifyDataSetChanged();
