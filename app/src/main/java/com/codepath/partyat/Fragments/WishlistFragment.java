@@ -20,6 +20,7 @@ import com.codepath.partyat.R;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -58,16 +59,17 @@ public class WishlistFragment extends Fragment {
         mRvWishlist.setAdapter(mAdapter);
         mRvWishlist.setLayoutManager(new LinearLayoutManager(getContext()));
 
-//        Log.i(TAG, "First element: " + ParseUser.getCurrentUser().getList("liked").get(0).getTitle());
-        List<Event> liked = null;
-        try {
-            liked = ParseUser.getCurrentUser().fetchIfNeeded().getList("liked");
-        } catch (ParseException e) {
-            e.printStackTrace();
+        // Create new list
+        List<Event> liked;
+        // fetch current array
+        liked = new ArrayList<>();
+        //old list
+        List<Event> old = ParseUser.getCurrentUser().getList("liked");
+        if (old != null) {
+            liked.addAll(old);
         }
-        if (liked != null){
-            mEvents.addAll(liked);
-            mAdapter.notifyDataSetChanged();
-        }
+        Log.i(TAG, " Elements : " + liked.get(0).getObjectId());
+        mEvents.addAll(liked);
+        mAdapter.notifyDataSetChanged();
     }
 }

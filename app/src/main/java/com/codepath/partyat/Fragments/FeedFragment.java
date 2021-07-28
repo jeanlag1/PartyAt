@@ -32,13 +32,14 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-
 
 public class FeedFragment extends Fragment implements DataManager.EventsQueryCallback {
 
@@ -73,10 +74,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
         mUserPref = new Preference();
         mCurrentUser = ParseUser.getCurrentUser();
 
-//        getLocation();
-
-        mDataManager.queryPreferences();
-        mDataManager.queryEvents(this);
+        mDataManager.queryPreferences(this);
 
         mAdapter = new EventAdapter(getContext(), mEvents);
         rvFeed.setAdapter(mAdapter);
@@ -99,5 +97,9 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
         mAdapter.notifyDataSetChanged();
     }
 
-
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        MapFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//    }
 }

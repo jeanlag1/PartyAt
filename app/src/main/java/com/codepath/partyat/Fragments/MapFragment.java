@@ -127,14 +127,13 @@ public class MapFragment extends Fragment implements DataManager.EventsQueryCall
         }
     }
 
-    private void addMarkers() {
+    private void addMarkers() throws ParseException {
         for (Event e : mEvents) {
             ParseGeoPoint location = e.getLocation();
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude(), location.getLongitude()))
                     .title(e.getTitle())
                     .snippet(e.getDate() + " @ " + e.getTime()));
-            Toast.makeText(getContext(), "Successfully added", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -257,7 +256,7 @@ public class MapFragment extends Fragment implements DataManager.EventsQueryCall
     }
 
     @Override
-    public void onEventsFetch(List<Event> events) {
+    public void onEventsFetch(List<Event> events) throws ParseException {
         mEvents.addAll(events);
         addMarkers();
     }

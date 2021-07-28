@@ -22,13 +22,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 public class DataManager {
 
     private ParseUser mCurrentUser;
 
     public interface EventsQueryCallback{
-        public void onEventsFetch(List<Event> events);
+        public void onEventsFetch(List<Event> events) throws ParseException;
     }
     private static final String TAG = DataManager.class.getSimpleName();
     private static final double SCORE_SCALE_FACTOR = 10000;
@@ -54,7 +55,11 @@ public class DataManager {
                     Log.e(TAG, "Issue with getting events", e);
                     return;
                 }
-                cb.onEventsFetch(events);
+                try {
+                    cb.onEventsFetch(events);
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
             }
         });
     }
@@ -104,12 +109,6 @@ public class DataManager {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             mCurrentLocation = location;
-                        } else {
-                            // For emulator
-                            Location emulator_location = new Location("");
-                            emulator_location.setLatitude(41);
-                            emulator_location.setLongitude(-73);
-                            mCurrentLocation = emulator_location;
                         }
                     }
                 })
@@ -122,7 +121,7 @@ public class DataManager {
                 });;
     }
 
-    public void queryPreferences() {
+    public void queryPreferences(EventsQueryCallback cb) {
         ParseQuery<Preference> query = ParseQuery.getQuery(Preference.class);
         query.include("user");
         query.whereEqualTo("user", mCurrentUser);
@@ -135,8 +134,10 @@ public class DataManager {
                 }
 
                 mUserPref = prefs.get(0);
+                queryEvents(cb);
             }
         });
 
     }
+
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,7 +38,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull EventAdapter.ViewHolder holder, int position) {
         Event event = mEvents.get(position);
-        holder.bind(event);
+        try {
+            holder.bind(event);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -68,7 +73,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             });
         }
 
-        public void bind(Event event) {
+        public void bind(Event event) throws ParseException {
             mTitle.setText(event.getTitle());
             mDetails.setText(event.getDetails());
             if (event.getImage() != null) {

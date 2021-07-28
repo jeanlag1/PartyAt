@@ -42,7 +42,11 @@ public class DetailsActivity extends AppCompatActivity {
 
         mEvent = (Event) getIntent().getSerializableExtra("event");
 
-        mTitle.setText(mEvent.getTitle());
+        try {
+            mTitle.setText(mEvent.getTitle());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         mDetails.setText(mEvent.getDetails());
         Glide.with(this).load(mEvent.getImage().getUrl()).into(mImage);
 

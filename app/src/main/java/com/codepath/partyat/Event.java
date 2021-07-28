@@ -1,6 +1,7 @@
 package com.codepath.partyat;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -23,8 +24,8 @@ public class Event extends ParseObject implements Serializable {
 
     // Getters
 
-    public String getTitle() {
-        return getString("title");
+    public String getTitle() throws ParseException {
+        return fetchIfNeeded().getString("title");
     }
 
     public String getDetails() {
