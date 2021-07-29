@@ -54,6 +54,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
     private EditText mEtDetails;
     private EditText mDate;
     private EditText mTime;
+    private EditText mPrice;
     private ImageView mIvUploadPicture;
     private ImageView mBtnLocation;
     private EditText mLocation;
@@ -78,6 +79,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         mLocation = findViewById(R.id.etLocation);
         mBtnLocation = findViewById(R.id.btnLocation);
         mIsPrivate = findViewById(R.id.sIsPrivate);
+        mPrice = findViewById(R.id.etPrice);
 
         mBtnTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +165,7 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         mEvent.setLocation(location);
         mEvent.setIsPrivate(mIsPrivate.isChecked());
         mEvent.setIsWeekend(mIsWeekend);
+        mEvent.setPrice(Integer.parseInt(mPrice.getText().toString()));
 
         if (mPhotoFile != null) {
             mEvent.setImage(new ParseFile(mPhotoFile));

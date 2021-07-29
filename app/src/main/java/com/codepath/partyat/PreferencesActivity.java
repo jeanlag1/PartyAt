@@ -20,6 +20,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private Switch mIsPrivate;
     private Switch mIsWeekend;
     private EditText mMaxDistance;
+    private EditText mMaxPrice;
     private Button mSave;
 
 
@@ -31,6 +32,7 @@ public class PreferencesActivity extends AppCompatActivity {
         mIsPrivate = findViewById(R.id.sPrivate);
         mIsWeekend = findViewById(R.id.sWeekend);
         mMaxDistance = findViewById(R.id.etMaxDistance);
+        mMaxPrice = findViewById(R.id.etMaxPrice);
         mSave = findViewById(R.id.btnSavePref);
 
         mSave.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +59,7 @@ public class PreferencesActivity extends AppCompatActivity {
         pref.setIsPrivate(mIsPrivate.isChecked());
         pref.setIsWeekend(mIsWeekend.isChecked());
         pref.setMaxDistance(Integer.parseInt(mMaxDistance.getText().toString()));
+        pref.setMaxPrice(Integer.parseInt(mMaxPrice.getText().toString()));
         pref.setUser(ParseUser.getCurrentUser());
         pref.saveInBackground(new SaveCallback() {
             @Override

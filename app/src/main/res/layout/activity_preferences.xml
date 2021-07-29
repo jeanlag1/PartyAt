@@ -40,6 +40,14 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <EditText
+        android:id="@+id/etMaxPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Max. Price (in USD)"
+        android:inputType="number" />
+
     <Button
         android:id="@+id/btnSavePref"
         android:layout_width="match_parent"

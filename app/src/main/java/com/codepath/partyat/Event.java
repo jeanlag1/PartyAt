@@ -16,6 +16,7 @@ public class Event extends ParseObject implements Serializable {
     private String mDetails;
     private String mDate;
     private String mTime;
+    private Integer mPrice;
     private ParseGeoPoint mLocation;
     private ParseUser mUser;
     private ParseFile mImage;
@@ -30,6 +31,10 @@ public class Event extends ParseObject implements Serializable {
 
     public String getDetails() {
         return getString("details");
+    }
+
+    public Integer getPrice() {
+        return getInt("price");
     }
 
     public ParseGeoPoint getLocation() {
@@ -59,6 +64,7 @@ public class Event extends ParseObject implements Serializable {
         return getBoolean("isWeekend");
     }
 
+
     // Setters
 
     public void setTitle(String mTitle) {
@@ -67,6 +73,10 @@ public class Event extends ParseObject implements Serializable {
 
     public void setDetails(String mDetails) {
         put("details",mDetails);
+    }
+
+    public void setPrice(Integer mPrice) {
+        put("price",mPrice);
     }
 
     public void setLocation(ParseGeoPoint mLocation) {

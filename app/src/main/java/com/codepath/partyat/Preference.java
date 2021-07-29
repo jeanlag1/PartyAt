@@ -14,6 +14,7 @@ public class Preference extends ParseObject implements Serializable {
     private Boolean mIsPrivate;
     private Boolean mIsWeekend;
     private Integer mMaxDistance;
+    private Integer mPrice;
     private ParseUser mUser;
 
     // Getters
@@ -28,6 +29,10 @@ public class Preference extends ParseObject implements Serializable {
 
     public Integer getMaxDistance() {
         return getInt("maxDistance");
+    }
+
+    public Integer getMaxPrice() {
+        return getInt("maxPrice");
     }
 
     public ParseUser getUser() {
@@ -46,6 +51,10 @@ public class Preference extends ParseObject implements Serializable {
 
     public void setMaxDistance(Integer mMaxDistance) {
         put("maxDistance", mMaxDistance);
+    }
+
+    public void setMaxPrice(Integer mPrice) {
+        put("maxPrice", mPrice);
     }
 
     public void setUser(ParseUser mUser) {

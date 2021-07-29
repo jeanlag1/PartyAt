@@ -42,6 +42,7 @@ public class DataManager {
         mCurrentUser = ParseUser.getCurrentUser();
     }
 
+    // Add bool shouldSort as param
     public void queryEvents(EventsQueryCallback cb) {
         ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
         query.include("user");
@@ -73,19 +74,21 @@ public class DataManager {
 
         // retrieve preferences
         int max_distance = mUserPref.getMaxDistance();
-        boolean is_weekend = mUserPref.getIsWeekend();
-        boolean is_private = mUserPref.getIsPrivate();
+        int maxPrice = mUserPref.getMaxPrice();
+        boolean user_weekend_pref = mUserPref.getIsWeekend();
+        boolean user_private_pref = mUserPref.getIsPrivate();
 
         double dist_to_event = computeDistToEvent(o1.getLocation());
 
         // factors
         double dist_factor = (max_distance - dist_to_event) / max_distance;
+        double priceFactor = (maxPrice - o1.getPrice()) / maxPrice;
         int event_type = o1.getIsPrivate() ? 1 : 0;
         int event_time = o1.getIsWeekend() ? 1 : 0;
-        int weekend_factor = is_weekend ? event_time : 0;
-        int private_factor = is_private ? event_type : 0;
+        int weekend_factor = user_weekend_pref ? event_time : 0;
+        int private_factor = user_private_pref ? event_type : 0;
 
-        double score = weekend_factor + private_factor +  dist_factor;
+        double score = weekend_factor + private_factor +  dist_factor + priceFactor;
 
         return SCORE_SCALE_FACTOR * score;
     }
@@ -109,6 +112,12 @@ public class DataManager {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             mCurrentLocation = location;
+                        } else {
+                            // For emulator
+                            Location l = new Location("");
+                            l.setLongitude(-73);
+                            l.setLatitude(41);
+                            mCurrentLocation = l;
                         }
                     }
                 })
@@ -132,12 +141,10 @@ public class DataManager {
                     Log.e(TAG, "Issue with getting pref", e);
                     return;
                 }
-
                 mUserPref = prefs.get(0);
                 queryEvents(cb);
             }
         });
-
     }
 
 }
