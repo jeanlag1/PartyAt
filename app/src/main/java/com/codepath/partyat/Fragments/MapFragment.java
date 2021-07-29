@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements DataManager.EventsQueryCall
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEvents = new ArrayList<>();
-        mDataManager = new DataManager(getActivity());
+        mDataManager = new DataManager(getActivity(), getContext());
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");

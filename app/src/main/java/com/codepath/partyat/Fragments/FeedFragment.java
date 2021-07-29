@@ -68,7 +68,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mDataManager = new DataManager(getActivity());
+        mDataManager = new DataManager(getActivity(), getContext() );
         rvFeed = view.findViewById(R.id.rvFeed);
         mEvents = new ArrayList<>();
         mUserPref = new Preference();
@@ -76,7 +76,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
 
         mDataManager.queryPreferences(this);
 
-        mAdapter = new EventAdapter(getContext(), mEvents);
+        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "feed");
         rvFeed.setAdapter(mAdapter);
         rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
 

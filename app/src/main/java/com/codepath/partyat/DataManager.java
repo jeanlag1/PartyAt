@@ -2,8 +2,10 @@ package com.codepath.partyat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -16,6 +18,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,10 +39,12 @@ public class DataManager {
     private List<Event> mEvents;
     private Preference mUserPref;
     private Location mCurrentLocation;
+    private Context mContext;
 
-    public DataManager(Activity activity){
+    public DataManager(Activity activity, Context context){
         getLocation(activity);
         mCurrentUser = ParseUser.getCurrentUser();
+        mContext = context;
     }
 
     // Add bool shouldSort as param
@@ -143,6 +148,34 @@ public class DataManager {
                 }
                 mUserPref = prefs.get(0);
                 queryEvents(cb);
+            }
+        });
+    }
+
+    public void addPartyToWishlist(Event mEvent) {
+        // Create new list
+        List<Event> liked;
+        // fetch current array
+        liked = new ArrayList<>();
+        //odl list
+        List<Event> old = ParseUser.getCurrentUser().getList("liked");
+        if (old != null) {
+            liked.addAll(old);
+        }
+        //Add party
+        liked.add(mEvent);
+
+        // Update list
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.put("liked", liked);
+        currentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null){
+                    Toast.makeText(mContext, "Save Successful", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

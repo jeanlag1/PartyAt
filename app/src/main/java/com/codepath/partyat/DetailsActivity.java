@@ -28,10 +28,12 @@ public class DetailsActivity extends AppCompatActivity {
     private ImageView mImage;
     private Button mAdd;
     private Event mEvent;
+    private DataManager mDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDataManager = new DataManager(DetailsActivity.this, DetailsActivity.this);
         setContentView(R.layout.activity_details);
         mAdd = findViewById(R.id.btnAddToWishlist);
         mLocation = findViewById(R.id.tvLocationD);
@@ -53,36 +55,10 @@ public class DetailsActivity extends AppCompatActivity {
         mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addParty();
+                mDataManager.addPartyToWishlist(mEvent);
             }
         });
     }
 
-    private void addParty() {
-        // Create new list
-        List<Event> liked;
-        // fetch current array
-        liked = new ArrayList<>();
-        //odl list
-        List<Event> old = ParseUser.getCurrentUser().getList("liked");
-        if (old != null) {
-            liked.addAll(old);
-        }
-        //Add party
-        liked.add(mEvent);
 
-        // Update list
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        currentUser.put("liked", liked);
-        currentUser.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null){
-                    Toast.makeText(DetailsActivity.this, "Save Successful", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(DetailsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 }

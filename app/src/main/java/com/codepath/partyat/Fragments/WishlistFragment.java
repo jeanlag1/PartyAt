@@ -55,7 +55,7 @@ public class WishlistFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mRvWishlist = view.findViewById(R.id.rvWishlist);
         mEvents = new ArrayList<>();
-        mAdapter = new EventAdapter(getContext(), mEvents);
+        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "wishlist");
         mRvWishlist.setAdapter(mAdapter);
         mRvWishlist.setLayoutManager(new LinearLayoutManager(getContext()));
 

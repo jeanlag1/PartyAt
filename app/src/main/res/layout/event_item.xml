@@ -9,6 +9,7 @@
     <ImageView
         android:id="@+id/ivEventImg"
         android:scaleType="centerCrop"
+        android:transitionName="image"
         android:layout_width="wrap_content"
         android:layout_height="300dp"
         app:layout_constraintEnd_toEndOf="parent"

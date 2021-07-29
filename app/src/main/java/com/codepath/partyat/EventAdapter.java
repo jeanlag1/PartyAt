@@ -1,14 +1,19 @@
 package com.codepath.partyat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 //import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,12 +25,19 @@ import java.io.Serializable;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
-    Context mContext;
-    List<Event> mEvents;
+    private Context mContext;
+    private List<Event> mEvents;
+    private DataManager mDataManager;
+    private Activity mActivity;
+    private String mFragmentName;
 
-    public EventAdapter(Context context, List<Event> events) {
+
+    public EventAdapter(Context context, List<Event> events, Activity activity, String mFragmentName) {
         this.mContext = context;
         this.mEvents = events;
+        this.mActivity = activity;
+        this.mFragmentName = mFragmentName;
+        this.mDataManager = new DataManager(activity, context);
     }
 
     @NonNull
@@ -50,25 +62,56 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         return mEvents.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTitle;
         private TextView mDetails;
         private ImageView mImage;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.tvEventTitle);
             mDetails = itemView.findViewById(R.id.tvEventDetails);
             mImage = itemView.findViewById(R.id.ivEventImg);
-            itemView.setOnClickListener(new View.OnClickListener() {
+
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                final GestureDetector gestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener(){
+                    @Override
+                    public void onLongPress(MotionEvent e) {
+                        super.onLongPress(e);
+                    }
+
+
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+
+                        if(mFragmentName== "wishlist") {
+                            return false;
+                        }
+                        mDataManager.addPartyToWishlist(mEvents.get(getAdapterPosition()));
+                        Toast.makeText(mContext, "Double", Toast.LENGTH_SHORT).show();
+                        return super.onDoubleTap(e);
+                    }
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        Intent i = new Intent(mContext, DetailsActivity.class);
+                        //get event at this position
+                        Event event = mEvents.get(getAdapterPosition());
+                        // serialize the movie using parceler
+                        i.putExtra("event", (Serializable) event);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation(mActivity, (View)mImage, "image");
+                        mContext.startActivity(i, options.toBundle());
+                        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
+                        return super.onSingleTapConfirmed(e);
+                    }
+
+                });
                 @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(mContext, DetailsActivity.class);
-                    //get event at this position
-                    Event event = mEvents.get(getAdapterPosition());
-                    // serialize the movie using parceler
-                    i.putExtra("event", (Serializable) event);
-                    mContext.startActivity(i);
+                public boolean onTouch(View v, MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return true;
                 }
             });
         }

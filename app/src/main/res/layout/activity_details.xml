@@ -10,6 +10,7 @@
     <ImageView
         android:id="@+id/ivImageD"
         android:layout_width="match_parent"
+        android:transitionName="image"
         android:layout_height="200dp"
         tools:srcCompat="@tools:sample/avatars" />
 
