@@ -121,7 +121,7 @@ public class MapFragment extends Fragment implements DataManager.EventsQueryCall
             Toast.makeText(getContext(), "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             MapFragmentPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapFragmentPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
-            mDataManager.queryEvents(this);
+            mDataManager.queryEvents(this, false, false);
         } else {
             Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
@@ -206,7 +206,7 @@ public class MapFragment extends Fragment implements DataManager.EventsQueryCall
         if (mCurrentLocation != null) {
             Toast.makeText(getContext(), "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 8);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 5);
             map.animateCamera(cameraUpdate);
         } else {
 //            Toast.makeText(getContext(), "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();

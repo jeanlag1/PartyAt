@@ -4,7 +4,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/etPrice"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateActivity">
@@ -199,7 +198,7 @@
             app:layout_constraintEnd_toEndOf="@+id/etDetails"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNumberDecimal" />
+            app:layout_constraintTop_toBottomOf="@+id/etPrice" />
 
         <TextView
             android:id="@+id/textView6"
@@ -211,7 +210,7 @@
             app:layout_constraintTop_toBottomOf="@+id/etLocation" />
 
         <EditText
-            android:id="@+id/editTextNumberDecimal"
+            android:id="@+id/etPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"

@@ -56,6 +56,10 @@ public class PreferencesActivity extends AppCompatActivity {
             Toast.makeText(this, "Max Distance cannot be empty", Toast.LENGTH_LONG).show();
             return;
         }
+        if (mMaxPrice.getText().toString().equals("0")) {
+            Toast.makeText(this, "Max Price cannot be 0", Toast.LENGTH_LONG).show();
+            return;
+        }
         pref.setIsPrivate(mIsPrivate.isChecked());
         pref.setIsWeekend(mIsWeekend.isChecked());
         pref.setMaxDistance(Integer.parseInt(mMaxDistance.getText().toString()));

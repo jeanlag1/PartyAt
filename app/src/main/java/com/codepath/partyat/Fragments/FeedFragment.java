@@ -84,22 +84,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
 
     @Override
     public void onEventsFetch(List<Event> events) {
-
-        // Sort events based on user preferences
-        events.sort(new Comparator<Event>() {
-            @Override
-            public int compare(Event o1, Event o2) {
-                return (int) - (mDataManager.compatibilityScore(o1) - mDataManager.compatibilityScore(o2));
-            }
-        });
-
         mEvents.addAll(events);
         mAdapter.notifyDataSetChanged();
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        MapFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//    }
 }

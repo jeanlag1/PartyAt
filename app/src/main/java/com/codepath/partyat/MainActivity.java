@@ -2,6 +2,8 @@ package com.codepath.partyat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -63,6 +65,26 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setTitle("");
 //        getSupportActionBar().setIcon(R.drawable.nav_logo_whiteout);
+        MenuItem searchItem = menu.findItem(R.id.btnSearchParty);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -79,6 +101,16 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, CreateActivity.class);
             startActivity(i);
         }
+
+        if (item.getItemId() == R.id.btnSearchParty) {
+            // TODO: Search party
+        }
+
+        if (item.getItemId() == R.id.btnSearchUser) {
+            Intent intent = new Intent(this, UserSearchActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

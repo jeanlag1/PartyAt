@@ -14,6 +14,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -29,13 +30,18 @@ import permissions.dispatcher.RuntimePermissions;
 
 public class DataManager {
 
+    private static final int FRIEND_SCALE_FACTOR = 100;
     private ParseUser mCurrentUser;
 
     public interface EventsQueryCallback{
         public void onEventsFetch(List<Event> events) throws ParseException;
     }
+    public interface UsersQueryCallback {
+        public void onUsersFetch(List<ParseUser> users);
+    }
     private static final String TAG = DataManager.class.getSimpleName();
     private static final double SCORE_SCALE_FACTOR = 10000;
+    private ArrayList<ParseUser> mUsers;
     private List<Event> mEvents;
     private Preference mUserPref;
     private Location mCurrentLocation;
@@ -45,22 +51,39 @@ public class DataManager {
         getLocation(activity);
         mCurrentUser = ParseUser.getCurrentUser();
         mContext = context;
+        mUsers = new ArrayList<ParseUser>();
     }
 
-    // Add bool shouldSort as param
-    public void queryEvents(EventsQueryCallback cb) {
+
+    public void queryEvents(EventsQueryCallback cb, boolean shouldFilter, boolean shouldSort) {
         ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
         query.include("user");
+        if (shouldFilter) {
+            query.whereEqualTo("user", mCurrentUser);
+        }
+
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Event>() {
             @Override
             public void done(List<Event> events, ParseException e) {
                 Log.i(TAG, events.toString());
+
                 // check for errors
                 if (e != null) {
                     Log.e(TAG, "Issue with getting events", e);
                     return;
                 }
+
+                if (shouldSort) {
+                    // Sort events based on user preferences
+                    events.sort(new Comparator<Event>() {
+                        @Override
+                        public int compare(Event o1, Event o2) {
+                            return (int) - (compatibilityScore(o1) - compatibilityScore(o2));
+                        }
+                    });
+                }
+
                 try {
                     cb.onEventsFetch(events);
                 } catch (ParseException parseException) {
@@ -84,18 +107,37 @@ public class DataManager {
         boolean user_private_pref = mUserPref.getIsPrivate();
 
         double dist_to_event = computeDistToEvent(o1.getLocation());
-
+        int friendsGoing = friendsGoingTo(o1);
         // factors
         double dist_factor = (max_distance - dist_to_event) / max_distance;
+        int friends_factor = FRIEND_SCALE_FACTOR * friendsGoing;
         double priceFactor = (maxPrice - o1.getPrice()) / maxPrice;
         int event_type = o1.getIsPrivate() ? 1 : 0;
         int event_time = o1.getIsWeekend() ? 1 : 0;
         int weekend_factor = user_weekend_pref ? event_time : 0;
         int private_factor = user_private_pref ? event_type : 0;
 
-        double score = weekend_factor + private_factor +  dist_factor + priceFactor;
+        double score = weekend_factor + private_factor +  dist_factor + priceFactor + friends_factor;
 
         return SCORE_SCALE_FACTOR * score;
+    }
+
+    private int friendsGoingTo(Event o1) {
+        List<ParseUser> users = new ArrayList<>();
+        for (ParseUser user: mUsers) {
+            if (isFollowing(mCurrentUser, user)){
+                List<Event> likedEvents = user.getList("liked");
+                List<String> IDs = new ArrayList<>();
+                if (likedEvents != null ){
+                    likedEvents.forEach((object) -> IDs.add(object.getObjectId()));
+                    if (IDs.contains(o1.getObjectId())){
+                        users.add(user);
+                    }
+                }
+            }
+
+        }
+        return users.size();
     }
 
     // This method computes the Euclidean distance between two location points
@@ -147,7 +189,13 @@ public class DataManager {
                     return;
                 }
                 mUserPref = prefs.get(0);
-                queryEvents(cb);
+                fetchUsers(new UsersQueryCallback() {
+                    @Override
+                    public void onUsersFetch(List<ParseUser> users) {
+                        mUsers.addAll(users);
+                        queryEvents(cb, false, true);
+                    }
+                }, null);
             }
         });
     }
@@ -178,6 +226,68 @@ public class DataManager {
                 }
             }
         });
+    }
+
+    public void fetchUsers(UsersQueryCallback cb,String search) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        if (search != null) {
+            query.whereStartsWith("username", search);
+        }
+        query.whereNotEqualTo("username", mCurrentUser.getUsername());
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting users", e);
+                    return;
+                }
+                cb.onUsersFetch(users);
+            }
+        });
+    }
+
+    public void followAction(ParseUser currentUser, ParseUser targetUser) {
+        List<ParseUser> old1 = currentUser.getList("following");
+        List<ParseUser> followingList = old1 != null ? new ArrayList<>(old1) : new ArrayList<>();
+        if (isFollowing(currentUser, targetUser)) {
+            removeFollow(followingList, targetUser);
+        } else {
+            followingList.add(targetUser);
+        }
+        currentUser.put("following", followingList);
+        currentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null){
+                    Toast.makeText(mContext, "Save Successful", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void removeFollow(List<ParseUser> followingList, ParseUser targetUser) {
+        ParseUser element = null;
+        for (ParseUser user : followingList) {
+            if (user.getObjectId().equals(targetUser.getObjectId())) {
+                element = user;
+                break;
+            }
+        }
+        followingList.remove(element);
+    }
+
+
+    public boolean isFollowing(ParseUser currentUser, ParseUser targetUser) {
+        List<ParseUser> users = currentUser.getList("following");
+        List<String> IDs =  new ArrayList<String>();
+        if  (users != null) {
+            users.forEach((user) -> IDs.add(user.getObjectId()));
+            return IDs.contains(targetUser.getObjectId());
+        }
+        return false;
     }
 
 }
