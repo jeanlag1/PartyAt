@@ -76,7 +76,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
 
         mDataManager.queryPreferences(this);
 
-        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "feed");
+        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "feed", null);
         rvFeed.setAdapter(mAdapter);
         rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
 

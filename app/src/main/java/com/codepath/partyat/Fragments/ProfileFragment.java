@@ -1,5 +1,6 @@
 package com.codepath.partyat.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.partyat.DataManager;
 import com.codepath.partyat.Event;
+import com.codepath.partyat.Preference;
+import com.codepath.partyat.PreferencesActivity;
 import com.codepath.partyat.R;
 import com.codepath.partyat.User;
 import com.codepath.partyat.UserEventsAdapter;
@@ -33,11 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ProfileFragment extends Fragment implements DataManager.EventsQueryCallback{
     private ImageView mImage;
     private TextView mFollowing;
@@ -97,6 +96,8 @@ public class ProfileFragment extends Fragment implements DataManager.EventsQuery
     }
 
     private void goToSettings() {
+        Intent i = new Intent(getContext(), PreferencesActivity.class);
+        startActivity(i);
     }
 
 

@@ -207,7 +207,13 @@ public class DataManager {
         liked = new ArrayList<>();
         //odl list
         List<Event> old = ParseUser.getCurrentUser().getList("liked");
+
         if (old != null) {
+            for (Event e : old) {
+                if (e.getObjectId().equals(mEvent.getObjectId())) {
+                    return;
+                }
+            }
             liked.addAll(old);
         }
         //Add party

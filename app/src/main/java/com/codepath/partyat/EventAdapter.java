@@ -1,7 +1,9 @@
 package com.codepath.partyat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -25,6 +27,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
+    public interface OnLongClickListener {
+        void onItemLongClicked(int position);
+    }
+    OnLongClickListener longClickListener;
     private Context mContext;
     private List<Event> mEvents;
     private DataManager mDataManager;
@@ -32,7 +38,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private String mFragmentName;
 
 
-    public EventAdapter(Context context, List<Event> events, Activity activity, String mFragmentName) {
+    public EventAdapter(Context context, List<Event> events, Activity activity, String mFragmentName, OnLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
         this.mContext = context;
         this.mEvents = events;
         this.mActivity = activity;
@@ -79,6 +86,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 final GestureDetector gestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener(){
                     @Override
                     public void onLongPress(MotionEvent e) {
+                        if (mFragmentName == "wishlist") {
+                            longClickListener.onItemLongClicked(getAdapterPosition());
+                        }
                         super.onLongPress(e);
                     }
 

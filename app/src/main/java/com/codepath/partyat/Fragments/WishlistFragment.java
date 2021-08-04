@@ -1,5 +1,7 @@
 package com.codepath.partyat.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,6 +37,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class WishlistFragment extends Fragment {
+
     private static final String TAG = "WishlistFragment";
     private RecyclerView mRvWishlist;
     private List<Event> mEvents;
@@ -55,7 +58,35 @@ public class WishlistFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mRvWishlist = view.findViewById(R.id.rvWishlist);
         mEvents = new ArrayList<>();
-        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "wishlist");
+
+        EventAdapter.OnLongClickListener onLongClickListener = new EventAdapter.OnLongClickListener() {
+
+            @Override
+            public void onItemLongClicked(int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("This party will be deleted!")
+                        .setMessage("Are you sure?");
+
+                // Add the buttons
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        removeItem(position);
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+                // Create the AlertDialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        };
+
+        // Set up Adapter
+        mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "wishlist", onLongClickListener);
         mRvWishlist.setAdapter(mAdapter);
         mRvWishlist.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -71,5 +102,16 @@ public class WishlistFragment extends Fragment {
         Log.i(TAG, " Elements : " + liked.get(0).getObjectId());
         mEvents.addAll(liked);
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void removeItem(int position) {
+        List<Event> liked = ParseUser.getCurrentUser().getList("liked");
+        liked.remove(mEvents.get(position));
+        ParseUser.getCurrentUser().put("liked", liked);
+        ParseUser.getCurrentUser().saveInBackground();
+        mEvents.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        Toast.makeText(getContext(), "Item  was removed", Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -65,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setTitle("");
 //        getSupportActionBar().setIcon(R.drawable.nav_logo_whiteout);
+        launchSearch(menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void launchSearch(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.btnSearchParty);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -84,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
