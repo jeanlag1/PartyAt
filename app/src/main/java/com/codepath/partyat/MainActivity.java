@@ -3,6 +3,7 @@ package com.codepath.partyat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -63,34 +64,13 @@ public class MainActivity extends AppCompatActivity {
         // inflate menu
         getMenuInflater().inflate(R.menu.main_menu, menu);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setTitle("");
-//        getSupportActionBar().setIcon(R.drawable.nav_logo_whiteout);
-        launchSearch(menu);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setIcon(R.drawable.logo3);
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void launchSearch(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.btnSearchParty);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // perform query here
 
-                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
-                // see https://code.google.com/p/android/issues/detail?id=24599
-                searchView.clearFocus();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -101,14 +81,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        if (item.getItemId() == R.id.btnCreate) {
-            Intent i = new Intent(MainActivity.this, CreateActivity.class);
-            startActivity(i);
-        }
-
-        if (item.getItemId() == R.id.btnSearchParty) {
-            // TODO: Search party
-        }
+//        if (item.getItemId() == R.id.btnSearchParty) {
+//            // TODO: Search party
+//        }
 
         if (item.getItemId() == R.id.btnSearchUser) {
             Intent intent = new Intent(this, UserSearchActivity.class);

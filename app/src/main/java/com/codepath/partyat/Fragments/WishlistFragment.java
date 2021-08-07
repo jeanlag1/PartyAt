@@ -99,7 +99,6 @@ public class WishlistFragment extends Fragment {
         if (old != null) {
             liked.addAll(old);
         }
-        Log.i(TAG, " Elements : " + liked.get(0).getObjectId());
         mEvents.addAll(liked);
         mAdapter.notifyDataSetChanged();
     }

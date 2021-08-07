@@ -7,18 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import org.w3c.dom.Text;
-import org.w3c.dom.ls.LSInput;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity {
     private TextView mDetails;
@@ -38,19 +31,23 @@ public class DetailsActivity extends AppCompatActivity {
         mAdd = findViewById(R.id.btnAddToWishlist);
         mLocation = findViewById(R.id.tvLocationD);
         mDetails = findViewById(R.id.tvDetailsD);
-        mDate = findViewById(R.id.tvDateD);
-        mTitle = findViewById(R.id.tvTitleD);
+        mDate = findViewById(R.id.tvDateAndTimeD);
+        mTitle = findViewById(R.id.tvTitleAnddPrice);
         mImage = findViewById(R.id.ivImageD);
 
         mEvent = (Event) getIntent().getSerializableExtra("event");
 
         try {
-            mTitle.setText(mEvent.getTitle());
+            mTitle.setText(mEvent.getTitle() + " - $" + mEvent.getPrice());
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        mDate.setText(mEvent.getDate() + " @ " + mEvent.getTime());
         mDetails.setText(mEvent.getDetails());
-        Glide.with(this).load(mEvent.getImage().getUrl()).into(mImage);
+        Glide.with(this)
+                .load(mEvent.getImage().getUrl())
+                .transform(new RoundedCorners(100))
+                .into(mImage);
 
         mAdd.setOnClickListener(new View.OnClickListener() {
             @Override

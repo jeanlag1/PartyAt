@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.parse.ParseException;
 
 import java.io.Serializable;
@@ -74,12 +75,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         private TextView mTitle;
         private TextView mDetails;
         private ImageView mImage;
+        private ImageView mProfileImg;
+        private TextView mUsername;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.tvEventTitle);
             mDetails = itemView.findViewById(R.id.tvEventDetails);
+            mUsername = itemView.findViewById(R.id.tvPostUser);
+            mProfileImg = itemView.findViewById(R.id.ivPostImg);
             mImage = itemView.findViewById(R.id.ivEventImg);
 
             itemView.setOnTouchListener(new View.OnTouchListener() {
@@ -129,6 +134,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         public void bind(Event event) throws ParseException {
             mTitle.setText(event.getTitle());
             mDetails.setText(event.getDetails());
+            mUsername.setText(event.getUser().fetchIfNeeded().getUsername());
+            Glide.with(mContext).load(event.getUser().getParseFile("profileImage").getUrl()).transform(new RoundedCorners(300)).into(mProfileImg);
             if (event.getImage() != null) {
                 Glide.with(mContext).load(event.getImage().getUrl()).into(mImage);
             }

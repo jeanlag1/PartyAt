@@ -10,12 +10,14 @@
     <ImageView
         android:id="@+id/ivImageD"
         android:layout_width="match_parent"
-        android:transitionName="image"
         android:layout_height="200dp"
+        android:layout_marginVertical="8dp"
+        android:textAlignment="center"
+        android:transitionName="image"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvTitleD"
+        android:id="@+id/tvTitleAnddPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
@@ -32,7 +34,7 @@
         tools:text="730 Escondido Rd, Stanford, CA 94305" />
 
     <TextView
-        android:id="@+id/tvDateD"
+        android:id="@+id/tvDateAndTimeD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"

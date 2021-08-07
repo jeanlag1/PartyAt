@@ -1,6 +1,7 @@
 package com.codepath.partyat.Fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,14 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.codepath.partyat.CreateActivity;
 import com.codepath.partyat.DataManager;
 import com.codepath.partyat.Event;
 import com.codepath.partyat.EventAdapter;
+import com.codepath.partyat.MainActivity;
 import com.codepath.partyat.Preference;
 import com.codepath.partyat.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -53,6 +57,7 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation;
     private DataManager mDataManager;
+    private FloatingActionButton mCreate;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -70,10 +75,18 @@ public class FeedFragment extends Fragment implements DataManager.EventsQueryCal
         super.onViewCreated(view, savedInstanceState);
         mDataManager = new DataManager(getActivity(), getContext() );
         rvFeed = view.findViewById(R.id.rvFeed);
+        mCreate = view.findViewById(R.id.FABCreate);
         mEvents = new ArrayList<>();
         mUserPref = new Preference();
         mCurrentUser = ParseUser.getCurrentUser();
 
+        mCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), CreateActivity.class);
+                startActivity(i);
+            }
+        });
         mDataManager.queryPreferences(this);
 
         mAdapter = new EventAdapter(getContext(), mEvents, getActivity(), "feed", null);

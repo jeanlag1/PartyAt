@@ -38,13 +38,14 @@ public class UserSearchActivity extends AppCompatActivity implements DataManager
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // inflate menu
         getMenuInflater().inflate(R.menu.user_search_menu, menu);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setTitle("");
-//        getSupportActionBar().setIcon(R.drawable.nav_logo_whiteout);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setIcon(R.drawable.logo3);
         MenuItem searchItem = menu.findItem(R.id.action_search_user);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

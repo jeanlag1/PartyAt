@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.partyat.DataManager;
 import com.codepath.partyat.Event;
 import com.codepath.partyat.Preference;
@@ -91,7 +92,7 @@ public class ProfileFragment extends Fragment implements DataManager.EventsQuery
         mUsername.setText("@" + mCurrentUser.getUsername());
 //        if (mCurrentUser.getParseFile("profileImage") != null) {
         String url = mCurrentUser.getParseFile("profileImage").getUrl();
-        Glide.with(getContext()).load(url).into(mImage);
+        Glide.with(getContext()).load(url).transform(new RoundedCorners(300)).into(mImage);
 //        }
     }
 

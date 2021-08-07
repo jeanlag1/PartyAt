@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView mUsername;
     private TextView mPassword;
     private Button mBtnLogin;
-    private Button mBtnSignUp;
+    private TextView mBtnSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,5 +106,18 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // inflate menu
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setIcon(R.drawable.logo3);
+        menu.findItem(R.id.btnSearchUser).setVisible(false);
+        menu.findItem(R.id.logout).setVisible(false);
+
+        return super.onCreateOptionsMenu(menu);
     }
 }
